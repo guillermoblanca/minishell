@@ -6,19 +6,20 @@
 #include "lexer.h"
 #include "command.h"
 
-void printHeader()
+void print_header()
 {
-    FILE *f = fopen("header.txt", "r");
+    FILE *file;
+    char line[256];
 
-    if (f)
+    file = fopen("header.txt", "r");
+    if (file == NULL)
+        return;
+
+    while (fgets(line, sizeof(line), file))
     {
-        char line[256];
-        while (fgets(line, sizeof(line), f))
-        {
-            printf("%s", line);
-        }
-        fclose(f);
+        printf("%s", line);
     }
+    fclose(file);
 }
 
 void print_tokens(t_token *token)
@@ -37,7 +38,7 @@ int main(void)
 {
     char *line;
     t_token *tokens;
-    printHeader();
+    print_header();
 
     while (1)
     {
@@ -73,6 +74,7 @@ int main(void)
             tmp = tmp->next;
         }
 
+        expand_env_variables(tokens);
         char **argv = tokens_to_argv(tokens);
         execute_command(argv, output_file, redir_type);
         if (argv)
@@ -90,6 +92,5 @@ int main(void)
         free(line);
     }
 
-    printf("fin del proceso general \n");
     return 0;
 }

@@ -10,6 +10,7 @@ typedef struct s_command{
     struct s_command *next; //para comands conectados por pipe
 } t_command;
 
+int get_last_exit_code();
 void execute_pipeline(char **argv1, char **argv2);
 void execute_command(char **argv, char *output_file, t_token_type redir_type );
 #endif

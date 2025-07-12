@@ -5,13 +5,21 @@
 #include <fcntl.h>
 #include <sys/wait.h>
 #include "command.h"
+static int g_last_exit_code = 0;
 
-void execute_pipeline(char **argv1, char **argv2) {
+int get_last_exit_code()
+{
+    return g_last_exit_code;
+}
+
+void execute_pipeline(char **argv1, char **argv2)
+{
     int fd[2];
     pipe(fd);
 
     pid_t pid1 = fork();
-    if (pid1 == 0) {
+    if (pid1 == 0)
+    {
         dup2(fd[1], STDOUT_FILENO);
         close(fd[0]);
         close(fd[1]);
@@ -21,7 +29,8 @@ void execute_pipeline(char **argv1, char **argv2) {
     }
 
     pid_t pid2 = fork();
-    if (pid2 == 0) {
+    if (pid2 == 0)
+    {
         dup2(fd[0], STDIN_FILENO);
         close(fd[0]);
         close(fd[1]);
@@ -37,25 +46,25 @@ void execute_pipeline(char **argv1, char **argv2) {
     waitpid(pid2, NULL, 0);
 }
 
-
 void execute_command(char **argv, char *output_file, t_token_type redir_type)
 {
     pid_t pid = fork();
 
-    for (int i = 0; argv[i]; ++i)
-
-    if (pid == 0) {
+    if (pid == 0)
+    {
         // Proceso hijo
-        if (output_file != NULL) {
+        if (output_file != NULL)
+        {
             int fd;
-             if (redir_type == TOKEN_REDIR_OUT_APPEND)
+            if (redir_type == TOKEN_REDIR_OUT_APPEND)
                 fd = open(output_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
             else
                 fd = open(output_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 
-            if (fd < 0) {
+            if (fd < 0)
+            {
                 perror("open");
-                _exit(1);
+                exit(1);
             }
 
             dup2(fd, STDOUT_FILENO);
@@ -63,16 +72,21 @@ void execute_command(char **argv, char *output_file, t_token_type redir_type)
         }
 
         execvp(argv[0], argv);
-        fprintf(stderr, "%s: command not found\n", argv[0]);
-      //  _exit(1); //se debe cerrar si encuentra un error?
+        exit(1);
     }
 
-    else if (pid > 0) {
-    int status;
-    waitpid(pid, &status, 0);
+    else if (pid > 0)
+    {
+        int status;
+        waitpid(pid, &status, 0);
+        if (WIFEXITED(status))
+            g_last_exit_code = WEXITSTATUS(status);
+        else
+            g_last_exit_code = 1;
     }
-     else{
-         perror("fork");
-         exit(1);
-     }
+    else
+    {
+        perror("fork");
+        exit(1);
+    }
 }
