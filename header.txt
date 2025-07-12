@@ -1,0 +1,29 @@
+                                 __  __ _       _  _____ _          _ _ 
+                                |  \/  (_)     (_)/ ____| |        | | |
+                                | \  / |_ _ __  _| (___ | |__   ___| | |
+                                | |\/| | | '_ \| |\___ \| '_ \ / _ \ | |
+                                | |  | | | | | | |____) | | | |  __/ | |
+                                |_|  |_|_|_| |_|_|_____/|_| |_|\___|_|_|
+                                         
+                                         
+                                    ¡Bienvendio a Minishell!
+
+Este programa replica el comportamiento de Shell. Los comandos que puedes usar son:
+
+* echo
+* "|"
+* "<" "<<" ">" ">>" en proceso de hacerse. falla al usarse y se bloquea
+* cat
+
+Funciones permitidas:
+
+readline, rl_clear_history, rl_on_new_line,
+rl_replace_line, rl_redisplay, add_history,
+printf, malloc, free, write, access, open, read,
+close, fork, wait, waitpid, wait3, wait4, signal,
+sigaction, sigemptyset, sigaddset, kill, exit,
+getcwd, chdir, stat, lstat, fstat, unlink, execve,
+dup, dup2, pipe, opendir, readdir, closedir,
+strerror, perror, isatty, ttyname, ttyslot, ioctl,
+getenv, tcsetattr, tcgetattr, tgetent, tgetflag,
+tgetnum, tgetstr, tgoto, tputs
