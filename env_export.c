@@ -1,4 +1,4 @@
-#include "stricturescdmandshell.h"
+#include "structurescdmandshell.h"
 
 int	check_env(char *env)
 {

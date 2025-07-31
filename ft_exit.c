@@ -1,4 +1,4 @@
-#include "stricturescdmandshell.h"
+#include "structurescdmandshell.h"
 
 void    ft_exit(char **command, t_shell *shell)
 {
@@ -14,7 +14,7 @@ void    ft_exit(char **command, t_shell *shell)
                 shell->g_status = 0;
 }
 
-void	write_exit_toomany(t_shell *shell)
+void	write_exit(t_shell *shell)
 {
 	write(STDERR_FILENO, "exit: too many arguments\n", 26);
 	shell->g_status = 1;

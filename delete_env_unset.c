@@ -1,4 +1,4 @@
-#include "stricturescdmandshell.h"
+#include "structurescdmandshell.h"
 
 void	ft_delete_env_unset(char **name, t_shell *shell)
 {

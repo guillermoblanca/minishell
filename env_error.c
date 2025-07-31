@@ -1,4 +1,4 @@
-#include "stricturescdmandshell.h"
+#include "structurescdmandshell.h"
 
 void	error_env(char *command, int i)
 {
