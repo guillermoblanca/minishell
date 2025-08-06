@@ -61,7 +61,9 @@ void    ft_home_cd(t_shell *shell);
 void    update_pwd(t_shell *shell);
 void    ft_cd(char **command, t_shell *shell);
 
-
+void    ft_exit(char **command, t_shell *shell);
+void    print_exit_error(t_shell *shell);
+void    print_num_error(t_shell *shell, char **cmd);
 
 
 # define STDIN_FILENO 0
