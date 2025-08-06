@@ -1,15 +1,15 @@
 #include "builtins.h"
 
-void    ft_exit(char **command, t_shell *shell)
+void    ft_exit(char **cmd, t_shell *shell)
 {
         shell->exit = 1;
         write(shell->outfd, "exit\n", 5);
-        if (command[0] && command[1])
+        if (cmd[0] && cmd[1])
                 print_exit_error(shell);
-        else if (command[0] && ft_isdigit_str(command[0]) == 0)
-                print_num_error(shell, command);
+        else if (cmd[0] && ft_isdigit_str(cmd[0]) == 0)
+                print_num_error(shell, cmd);
         else if (command[0])
-                shell->g_status = ft_atoi(command[0]);
+                shell->g_status = ft_atoi(cmd[0]);
         else
                 shell->g_status = 0;
 }
@@ -20,10 +20,10 @@ void	print_exit_error(t_shell *shell)
 	shell->g_status = 1;
 }
 
-void	print_num_error(t_shell *shell, char **command)
+void	print_num_error(t_shell *shell, char **cmd)
 {
 	write(STDERR_FILENO, "exit", 4);
-	write(STDERR_FILENO, command[0], ft_strlen(command[0]));
-	write(STDERR_FILENO, "num arg requiered", 17);
+	write(STDERR_FILENO, cmd[0], ft_strlen(cmd[0]));
+	write(STDERR_FILENO, "requiered: num arg", 18);
 	shell->g_status = 1;
 }
