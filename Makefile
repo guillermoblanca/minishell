@@ -11,6 +11,14 @@ main.c\
 ft_printf.c\
 ft_utils_printf.c\
 ft_split.c\
+delete_env_unset.c\
+env.c\
+env_error.c\
+env_export.c\
+env_print.c\
+ft_cd.c\
+ft_errror_cd.c\
+ft_exit.c\
 
 
 OBJECTS = $(SOURCES:.c=.o)
