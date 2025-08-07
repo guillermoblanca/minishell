@@ -5,7 +5,6 @@ CFLAGS = -Wall -Wextra -Werror
 
 SOURCES = \
 command.c\
-compile.c\
 lexer.c\
 main.c\
 ft_printf.c\
