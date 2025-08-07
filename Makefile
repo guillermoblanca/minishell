@@ -19,7 +19,8 @@ env_print.c\
 ft_cd.c\
 ft_errror_cd.c\
 ft_exit.c\
-
+ft_pwd.c\
+ft_utils.c\
 
 OBJECTS = $(SOURCES:.c=.o)
 
