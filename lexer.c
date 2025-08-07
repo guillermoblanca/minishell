@@ -166,12 +166,12 @@ void free_tokens(t_token *tokens)
 
 void expand_env_variables(t_token *tokens)
 {
-     while (tokens)
+    while (tokens)
     {
-        if (tokens->type == TOKEN_WORD && tokens->value[0] == '$' && tokens->value[1] != '\0')
+        if ((tokens->type == TOKEN_WORD || tokens->type == TOKEN_WORD_DOUBLE_QUOTED)
+            && tokens->value[0] == '$' && tokens->value[1] != '\0')
         {
             char *env_name = tokens->value + 1;
-
             char *env_value = NULL;
 
             if (strcmp(env_name, "?") == 0)
@@ -182,8 +182,8 @@ void expand_env_variables(t_token *tokens)
             }
             else
             {
-                env_value = getenv(env_name);
-                env_value = env_value ? strdup(env_value) : strdup("");
+                char *env = getenv(env_name);
+                env_value = env ? strdup(env) : strdup("");
             }
 
             free(tokens->value);

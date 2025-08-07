@@ -9,12 +9,14 @@ TODO:
 */
 
 typedef enum e_token_type{
-    TOKEN_WORD,
+     TOKEN_WORD,
+    TOKEN_WORD_SINGLE_QUOTED,  // texto entre comillas simples '...'
+    TOKEN_WORD_DOUBLE_QUOTED,  // texto entre comillas dobles "..."
     TOKEN_PIPE,
-    TOKEN_REDIR_OUT,      // >
-    TOKEN_REDIR_OUT_APPEND, // >>
-    TOKEN_REDIR_IN,       // <
-    TOKEN_HEREDOC  
+    TOKEN_REDIR_OUT,
+    TOKEN_REDIR_OUT_APPEND,
+    TOKEN_REDIR_IN,
+    TOKEN_HEREDOC,
 } t_token_type;
 
 typedef struct s_token{

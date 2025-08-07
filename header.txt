@@ -10,7 +10,13 @@
 
 Este programa replica el comportamiento de Shell. Los comandos que puedes usar son:
 
-* echo
+* echo y echo -n
+* cd solo ruta relativa yh absoluta
+* pwd solo ruta relativa y o absuluta
+* export sin opciones
+* unset sin opciones
+* env sin opciones
+* exit sin opciones
 * "|"
 * "<" "<<" ">" ">>" en proceso de hacerse. falla al usarse y se bloquea
 * cat
@@ -27,3 +33,12 @@ dup, dup2, pipe, opendir, readdir, closedir,
 strerror, perror, isatty, ttyname, ttyslot, ioctl,
 getenv, tcsetattr, tcgetattr, tgetent, tgetflag,
 tgetnum, tgetstr, tgoto, tputs
+
+TAREAS:
+
+* echo $? falta por implementar, permite ver si un comando anterior ha tenido un error. 
+* signalt 
+
+ctrl + c display new prompt
+ctrl + d exit (gestion de memoria)
+ctrl + -\ does nothing

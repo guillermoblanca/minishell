@@ -9,8 +9,7 @@
 /*   Updated: 2024/11/16 14:15:06 by leiamart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-#include "pipex.h"
+#include "ft_printf.h"
 
 int	ft_convert(const char *c, va_list args, int i)
 {

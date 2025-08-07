@@ -1,35 +1,24 @@
-
-NAME = Minishell
+NAME = minishell
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g
 
 SOURCES = \
-command.c\
-lexer.c\
-main.c\
-ft_printf.c\
-ft_utils_printf.c\
-ft_split.c\
-delete_env_unset.c\
-env.c\
-env_error.c\
-env_export.c\
-env_print.c\
-ft_cd.c\
-ft_errror_cd.c\
-ft_exit.c\
-ft_pwd.c\
-ft_utils.c\
+	command.c \
+	lexer.c \
+	main.c \
+	ft_printf.c \
+	ft_utils_printf.c \
+	ft_split.c
 
 OBJECTS = $(SOURCES:.c=.o)
 
 all: $(NAME)
 
+$(NAME): $(OBJECTS)
+	$(CC) $(CFLAGS) $(OBJECTS) -o $(NAME) -lreadline 
+
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
-
-$(NAME): $(OBJECTS)
-	$(CC) -g $(FLAGS)
 
 clean:
 	rm -f $(OBJECTS)
