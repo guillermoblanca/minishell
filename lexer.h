@@ -39,8 +39,13 @@ t_token *add_token(t_token **last, t_token *new_token);
 t_token_type get_redir_type(const char *op);
 t_token *lexer(const char *input);
 
+
+//unset functions
+int builtin_unset(t_token *tokens, t_env **env);
+void remove_env(t_env **env, const char *key);
+
 //EXPORT
-t_env *init_env(char **envp);
+t_env *init_env(char **envp); //necesario?
 int builtin_export(t_token *tokens, t_env **env);
 int is_valid_identifier(const char *s);
 t_env *find_env(t_env *env, const char *key);

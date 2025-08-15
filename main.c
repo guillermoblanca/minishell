@@ -59,10 +59,17 @@ int main(int argc, char **argv, char **envp)
 
         tokens = lexer(line);
 
-        if (tokens && tokens->type == TOKEN_WORD && strcmp(tokens->value, "export") == 0)
+        if (tokens && tokens->type == TOKEN_WORD)
         {
-            last_exit_code = builtin_export(tokens, &env_list);
-            break;
+            if (strcmp(tokens->value, "export") == 0){
+                last_exit_code = builtin_export(tokens, &env_list);
+                break;
+            }
+            else if (strcmp(tokens->value, "unset") == 0)
+            {
+                last_exit_code = builtin_unset(tokens, &env_list);
+                break;
+            }
         }
 
         // print_tokens(tokens); // Debug

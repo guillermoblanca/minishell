@@ -249,6 +249,50 @@ int is_valid_identifier(const char *str)
     return 1;
 }
 
+int builtin_unset(t_token *tokens, t_env **env)
+{
+    t_token *current = tokens->next; // saltar "unset"
+
+    if (!current)
+        return 0; // sin argumentos, exit code = 0
+
+    while (current)
+    {
+        if (current->type == TOKEN_WORD)
+        {
+            remove_env(env, current->value); // tu función que borra la variable
+        }
+        current = current->next;
+    }
+    return 0; // siempre exit code 0
+}
+
+void remove_env(t_env **env, const char *key)
+{
+    t_env *current = *env;
+    t_env *prev = NULL;
+
+    while (current)
+    {
+        if (strcmp(current->key, key) == 0)
+        {
+            if (prev)
+                prev->next = current->next;
+            else
+                *env = current->next;
+
+            free(current->key);
+            free(current->value);
+            free(current);
+            return; // variable eliminada
+        }
+        prev = current;
+        current = current->next;
+    }
+    // si no se encontró, no hace nada
+}
+
+
 int builtin_export(t_token *tokens, t_env **env)
 {
     t_token *current = tokens->next; // saltar "export"
