@@ -4,6 +4,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "lexer.h"
+#include "exit.h"
 #include "command.h"
 
 void print_header()
@@ -61,14 +62,29 @@ int main(int argc, char **argv, char **envp)
 
         if (tokens && tokens->type == TOKEN_WORD)
         {
-            if (strcmp(tokens->value, "export") == 0){
-                last_exit_code = builtin_export(tokens, &env_list);
-                break;
+            if (strcmp(tokens->value, "export") == 0)
+            {
+                builtin_export(tokens, &env_list);
+                free_tokens(tokens);
+                free(line);
+                continue;
             }
             else if (strcmp(tokens->value, "unset") == 0)
             {
-                last_exit_code = builtin_unset(tokens, &env_list);
-                break;
+                builtin_unset(tokens, &env_list);
+                free_tokens(tokens);
+                free(line);
+                continue;
+            }
+            else if (strcmp(tokens->value, "exit") == 0)
+            {
+                int exit_status = builtin_exit(tokens, 0 /* aquí puedes pasar last_exit_code */);
+                free_tokens(tokens);
+                free(line);
+                if (exit_status != 1) // si no es "too many arguments"
+                    return exit_status;
+                else
+                    continue;
             }
         }
 

@@ -8,7 +8,8 @@ SOURCES = \
 	main.c \
 	ft_printf.c \
 	ft_utils_printf.c \
-	ft_split.c
+	ft_split.c \
+	exit.c
 
 OBJECTS = $(SOURCES:.c=.o)
 

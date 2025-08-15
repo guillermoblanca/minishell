@@ -1,4 +1,5 @@
 #include "lexer.h"
+#include "exit.h"
 #include "ft_printf.h"
 #include <string.h>
 #include <ctype.h>
