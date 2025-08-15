@@ -10,7 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdlib.h>
 #include "ft_printf.h"
+
 
 int	ft_putstr(char *s)
 {
@@ -56,7 +58,6 @@ int	ft_putvoid(uintptr_t n)
 	return (i);
 }
 
-#include <stdlib.h>
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {

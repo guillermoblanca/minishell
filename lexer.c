@@ -1,4 +1,5 @@
 #include "lexer.h"
+#include "ft_printf.h"
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
@@ -168,8 +169,7 @@ void expand_env_variables(t_token *tokens)
 {
     while (tokens)
     {
-        if ((tokens->type == TOKEN_WORD || tokens->type == TOKEN_WORD_DOUBLE_QUOTED)
-            && tokens->value[0] == '$' && tokens->value[1] != '\0')
+        if ((tokens->type == TOKEN_WORD || tokens->type == TOKEN_WORD_DOUBLE_QUOTED) && tokens->value[0] == '$' && tokens->value[1] != '\0')
         {
             char *env_name = tokens->value + 1;
             char *env_value = NULL;
@@ -190,5 +190,163 @@ void expand_env_variables(t_token *tokens)
             tokens->value = env_value;
         }
         tokens = tokens->next;
+    }
+}
+
+// TODO: move to export_lib.c
+
+static int env_count(t_env *env)
+{
+    int count = 0;
+    while (env)
+    {
+        count++;
+        env = env->next;
+    }
+    return count;
+}
+
+static void print_export_sorted(t_env *env)
+{
+    int n = env_count(env);
+    t_env **arr = malloc(sizeof(t_env *) * n);
+    int i = 0;
+
+    while (env)
+    {
+        arr[i++] = env;
+        env = env->next;
+    }
+
+    for (int a = 0; a < n - 1; a++)
+        for (int b = 0; b < n - a - 1; b++)
+            if (strcmp(arr[b]->key, arr[b + 1]->key) > 0)
+            {
+                t_env *tmp = arr[b];
+                arr[b] = arr[b + 1];
+                arr[b + 1] = tmp;
+            }
+
+    for (i = 0; i < n; i++)
+    {
+        if (arr[i]->value)
+            printf("declare -x %s=\"%s\"\n", arr[i]->key, arr[i]->value);
+        else
+            printf("declare -x %s\n", arr[i]->key);
+    }
+
+    free(arr);
+}
+int is_valid_identifier(const char *str)
+{
+    if (!str || (!isalpha(str[0]) && str[0] != '_'))
+        return 0;
+    for (int i = 1; str[i]; i++)
+    {
+        if (!isalnum(str[i]) && str[i] != '_')
+            return 0;
+    }
+    return 1;
+}
+
+int builtin_export(t_token *tokens, t_env **env)
+{
+    t_token *current = tokens->next; // saltar "export"
+    int status = 0;
+
+    // Sin argumentos: mostrar lista exportada
+    if (!current)
+    {
+        print_export_sorted(*env);
+        return 0;
+    }
+
+    while (current)
+    {
+        if (current->type == TOKEN_WORD)
+        {
+            char *equal = strchr(current->value, '=');
+            char *key;
+            char *value = NULL;
+
+            if (equal)
+            {
+                key = ft_substr(current->value, 0, equal - current->value);
+                value = strdup(equal + 1);
+            }
+            else
+            {
+                key = strdup(current->value);
+            }
+
+            if (!is_valid_identifier(key))
+            {
+                fprintf(stderr, "minishell: export: `%s': not a valid identifier\n", current->value);
+                status = 1; // marcar error pero continuar con los demás
+            }
+            else
+            {
+                set_env(env, key, value);
+            }
+
+            free(key);
+            free(value);
+        }
+        current = current->next;
+    }
+    return status;
+}
+
+
+t_env *init_env(char **envp)
+{
+    t_env *env_list = NULL;
+    int i = 0;
+
+    while (envp[i])
+    {
+        char *equal = strchr(envp[i], '=');
+        if (equal)
+        {
+            char *key = ft_substr(envp[i], 0, equal - envp[i]);
+            char *value = strdup(equal + 1);
+            set_env(&env_list, key, value);
+            free(key);
+            free(value);
+        }
+        i++;
+    }
+    return env_list;
+}
+
+
+
+t_env *find_env(t_env *env, const char *key)
+{
+    while (env)
+    {
+        if (strcmp(env->key, key) == 0)
+            return (env);
+        env = env->next;
+    }
+    return (NULL);
+}
+
+void set_env(t_env **env, const char *key, const char *value)
+{
+    t_env *var = find_env(*env, key);
+
+    if (var)
+    {
+        free(var->value);
+        var->value = value ? strdup(value) : NULL;
+    }
+    else
+    {
+        t_env *new = malloc(sizeof(t_env));
+        new->key = strdup(key);
+        new->value = value ? strdup(value) : NULL;
+        new->next = *env;
+        *env = new;
     }
 }

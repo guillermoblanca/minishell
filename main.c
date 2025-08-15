@@ -34,11 +34,15 @@ void print_tokens(t_token *token)
     }
 }
 
-int main(void)
+int main(int argc, char **argv, char **envp)
 {
     char *line;
     t_token *tokens;
     print_header();
+
+    t_env *env_list = init_env(envp);
+    (void)argc;
+    (void)argv;
 
     while (1)
     {
@@ -53,6 +57,14 @@ int main(void)
             add_history(line);
 
         tokens = lexer(line);
+
+        if (tokens && tokens->type ==TOKEN_WORD && strcmp(tokens->value, "export") == 0)
+        {
+            builtin_export(tokens,&env_list);
+            break;
+        }
+            
+
         // print_tokens(tokens); // Debug
         char *output_file = NULL;
         t_token_type redir_type = -1;

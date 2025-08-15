@@ -9,7 +9,7 @@ TODO:
 */
 
 typedef enum e_token_type{
-     TOKEN_WORD,
+    TOKEN_WORD,
     TOKEN_WORD_SINGLE_QUOTED,  // texto entre comillas simples '...'
     TOKEN_WORD_DOUBLE_QUOTED,  // texto entre comillas dobles "..."
     TOKEN_PIPE,
@@ -18,6 +18,12 @@ typedef enum e_token_type{
     TOKEN_REDIR_IN,
     TOKEN_HEREDOC,
 } t_token_type;
+
+typedef struct s_env{
+    char *key;
+    char *value;
+    struct s_env *next;
+} t_env;
 
 typedef struct s_token{
     t_token_type type;
@@ -32,4 +38,13 @@ t_token *create_token(t_token_type type, const char *value);
 t_token *add_token(t_token **last, t_token *new_token);
 t_token_type get_redir_type(const char *op);
 t_token *lexer(const char *input);
+
+//EXPORT
+t_env *init_env(char **envp);
+int builtin_export(t_token *tokens, t_env **env);
+int is_valid_identifier(const char *s);
+t_env *find_env(t_env *env, const char *key);
+void set_env(t_env **env, const char *key, const char *value);
+t_env *init_env(char **envp);
+
 #endif
