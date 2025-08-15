@@ -43,6 +43,7 @@ int main(int argc, char **argv, char **envp)
     t_env *env_list = init_env(envp);
     (void)argc;
     (void)argv;
+    int last_exit_code = 0;
 
     while (1)
     {
@@ -58,12 +59,11 @@ int main(int argc, char **argv, char **envp)
 
         tokens = lexer(line);
 
-        if (tokens && tokens->type ==TOKEN_WORD && strcmp(tokens->value, "export") == 0)
+        if (tokens && tokens->type == TOKEN_WORD && strcmp(tokens->value, "export") == 0)
         {
-            builtin_export(tokens,&env_list);
+            last_exit_code = builtin_export(tokens, &env_list);
             break;
         }
-            
 
         // print_tokens(tokens); // Debug
         char *output_file = NULL;
@@ -104,5 +104,5 @@ int main(int argc, char **argv, char **envp)
         free(line);
     }
 
-    return 0;
+    return (last_exit_code);
 }
