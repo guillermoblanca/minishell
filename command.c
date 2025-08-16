@@ -108,7 +108,7 @@ void execute_command(char **argv, char *output_file, t_token_type redir_type)
 }
 
 // TODO: comprobar si existen memory leaks
-int process_command(t_token *tokens, t_env **env_list, char *line)
+int process_command(t_token *tokens, t_env **env_list)
 {
     if (strcmp(tokens->value, EXPORT_COMMAND) == 0)
     {
@@ -123,8 +123,7 @@ int process_command(t_token *tokens, t_env **env_list, char *line)
     else if (strcmp(tokens->value, EXIT_COMMAND) == 0)
     {
         int exit_status = builtin_exit(tokens, g_last_exit_code);
-        free_tokens(tokens);
-        free(line);
+
         return (exit_status);
     }
 

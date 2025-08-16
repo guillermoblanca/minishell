@@ -56,16 +56,19 @@ int main(int argc, char **argv, char **envp)
 
         if (tokens && tokens->type == TOKEN_WORD)
         {
-            last_exit_code = process_command(tokens, &env_list, line);
+            last_exit_code = process_command(tokens, &env_list);
             if (last_exit_code != 0) // export/unset usan 1, exit devuelve código real
             {
 
-                if (strcmp(tokens->value, EXIT_COMMAND) == 0 && last_exit_code != 1){
+                if (strcmp(tokens->value, EXIT_COMMAND) == 0 && last_exit_code != 1)
+                {
                     exit(last_exit_code); // salir de verdad
                 }
             }
-            
         }
+
+        if (!tokens)
+            continue;
 
         char *output_file = NULL;
         t_token_type redir_type = -1;

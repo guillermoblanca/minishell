@@ -25,6 +25,6 @@ void execute_pipeline(char **argv1, char **argv2);
 void execute_command(char **argv, char *output_file, t_token_type redir_type);
 
 // TODO: comprobar si existen memory leaks
-int process_command(t_token *tokens, t_env **env_list, char *line);
+int process_command(t_token *tokens, t_env **env_list);
 void print_header();
 #endif
