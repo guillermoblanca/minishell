@@ -42,6 +42,7 @@ t_token *lexer(const char *input);
 
 //unset functions
 int builtin_unset(t_token *tokens, t_env **env);
+int builtin_exit(t_token *tokens, int last_status);
 void remove_env(t_env **env, const char *key);
 
 //EXPORT

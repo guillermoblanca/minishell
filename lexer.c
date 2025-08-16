@@ -1,11 +1,11 @@
 #include "lexer.h"
 #include "exit.h"
 #include "ft_printf.h"
+#include "command.h"
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "command.h"
 
 t_token *create_token(t_token_type type, const char *value)
 {
@@ -89,23 +89,18 @@ t_token *lexer(const char *input)
         {
             i++;
             continue;
-            ;
         }
 
-        // PIPE
         if (input[i] == '|')
         {
             add_token(&last, create_token(TOKEN_PIPE, "|"));
             if (!head)
-            {
                 head = last;
-            }
             i++;
         }
         else if (input[i] == '<' || input[i] == '>')
         {
-            // en 42 no se admite declarar variables fuera de la cabecera de la funcion
-            char op[3] = {input[i], 0, 0};
+            char op[3] = {input[i], 0, 0}; // para que se usa este op?
             if (input[i + 1] == input[i])
             {
                 op[1] = input[i];
@@ -117,8 +112,8 @@ t_token *lexer(const char *input)
             i++;
         }
         else
-        { // echo
-            char buffer[1024];
+        {
+            char buffer[1024]; // buffer definido con limite de 1024 caracteres, memory leak?
             int buf_index = 0;
             int in_quote = 0;
             char quote_char = 0;
@@ -194,8 +189,6 @@ void expand_env_variables(t_token *tokens)
     }
 }
 
-// TODO: move to export_lib.c
-
 static int env_count(t_env *env)
 {
     int count = 0;
@@ -252,20 +245,20 @@ int is_valid_identifier(const char *str)
 
 int builtin_unset(t_token *tokens, t_env **env)
 {
-    t_token *current = tokens->next; // saltar "unset"
+    t_token *current = tokens->next;
 
     if (!current)
-        return 0; // sin argumentos, exit code = 0
+        return (0);
 
     while (current)
     {
         if (current->type == TOKEN_WORD)
         {
-            remove_env(env, current->value); // tu función que borra la variable
+            remove_env(env, current->value);
         }
         current = current->next;
     }
-    return 0; // siempre exit code 0
+    return (0);
 }
 
 void remove_env(t_env **env, const char *key)
@@ -285,14 +278,12 @@ void remove_env(t_env **env, const char *key)
             free(current->key);
             free(current->value);
             free(current);
-            return; // variable eliminada
+            return;
         }
         prev = current;
         current = current->next;
     }
-    // si no se encontró, no hace nada
 }
-
 
 int builtin_export(t_token *tokens, t_env **env)
 {
@@ -308,7 +299,7 @@ int builtin_export(t_token *tokens, t_env **env)
 
     while (current)
     {
-        if (current->type == TOKEN_WORD)
+        if (current->type == TOKEN_WORD && current->value)
         {
             char *equal = strchr(current->value, '=');
             char *key;
@@ -320,14 +311,12 @@ int builtin_export(t_token *tokens, t_env **env)
                 value = strdup(equal + 1);
             }
             else
-            {
                 key = strdup(current->value);
-            }
 
             if (!is_valid_identifier(key))
             {
                 fprintf(stderr, "minishell: export: `%s': not a valid identifier\n", current->value);
-                status = 1; // marcar error pero continuar con los demás
+                status = 0; // marcar error pero continuar con los demás
             }
             else
             {
@@ -341,7 +330,6 @@ int builtin_export(t_token *tokens, t_env **env)
     }
     return status;
 }
-
 
 t_env *init_env(char **envp)
 {
@@ -364,8 +352,6 @@ t_env *init_env(char **envp)
     return env_list;
 }
 
-
-
 t_env *find_env(t_env *env, const char *key)
 {
     while (env)
@@ -385,13 +371,12 @@ void set_env(t_env **env, const char *key, const char *value)
     {
         free(var->value);
         var->value = value ? strdup(value) : NULL;
+        return;
     }
-    else
-    {
-        t_env *new = malloc(sizeof(t_env));
-        new->key = strdup(key);
-        new->value = value ? strdup(value) : NULL;
-        new->next = *env;
-        *env = new;
-    }
+
+    t_env *new = malloc(sizeof(t_env));
+    new->key = strdup(key);
+    new->value = value ? strdup(value) : NULL;
+    new->next = *env;
+    *env = new;
 }
